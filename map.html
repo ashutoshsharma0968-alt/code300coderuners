@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJU Campus Navigator (Free Edition)</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; }
+        header { background: #1a237e; color: white; padding: 15px; text-align: center; }
+        #map { height: 85vh; width: 100%; }
+        .custom-popup { font-weight: bold; color: #1a237e; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>AJU Student Campus Guide</h1>
+</header>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // 1. Initialize the map centered on Arka Jain University
+    // Coordinates: [Latitude, Longitude]
+    const map = L.map('map').setView([22.6888, 86.1960], 17);
+
+    // 2. Add the OpenStreetMap tiles (The "Skin" of the map)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 3. Define our AJU Locations
+    const locations = [
+        { name: "School of Engineering & IT", coords: [22.6892, 86.1958] },
+        { name: "Main Canteen (Hangout Spot)", coords: [22.6884, 86.1965] },
+        { name: "Volleyball Court", coords: [22.6880, 86.1970] },
+        { name: "Multipurpose Ground", coords: [22.6875, 86.1962] },
+        { name: "Admission Block", coords: [22.6889, 86.1952] }
+    ];
+
+    // 4. Add Markers to the map
+    locations.forEach(loc => {
+        L.marker(loc.coords)
+            .addTo(map)
+            .bindPopup(`<div class="custom-popup">${loc.name}</div>`)
+            .openPopup();
+    });
+
+    // 5. "Where am I?" - Real-time Location
+    map.locate({setView: true, maxZoom: 18});
+
+    function onLocationFound(e) {
+        L.circle(e.latlng, { radius: 10, color: 'red' }).addTo(map)
+            .bindPopup("You are here").openPopup();
+    }
+    map.on('locationfound', onLocationFound);
+
+</script>
+</body>
+</html>
